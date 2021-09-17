@@ -1,65 +1,77 @@
+// THESE ARE SOME HELPER METHODS
+
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <vector>
 
-// THESE ARE SOME HELPER METHODS
-using std::string;
+// Get current timestamp
+// The timestamp return as milliseconds since epoch
+uint64_t current_timestamp() {
+  using std::chrono::duration_cast;
+  using std::chrono::milliseconds;
+  using std::chrono::system_clock;
+  using std::chrono::time_point;
+  time_point<system_clock> current = system_clock::now();
+  milliseconds milliseconds_since_epoch = duration_cast<milliseconds>(current.time_since_epoch());
+  return milliseconds_since_epoch.count();
+}
 
 // print some string to the out stream
 // add end of line at the end
-void print(string s) {
+void print(std::string s) {
   std::cout << s << std::endl;
 }
 
 // print some string to the out stream
 // this will print with red foreground in the terminal
-void print_error(string s) {
+void print_error(std::string s) {
   printf("\033[0;31;49m%s\033[0m", s.c_str());
 }
 
 // print some string to the out stream
-// this will print with red foreground in the terminal
-void print_success(string s) {
+// this will print with green foreground in the terminal
+void print_success(std::string s) {
   printf("\033[0;32;49m%s\033[0m", s.c_str());
 }
 
 // Get user input and print some given string
 // return user input value
-string string_input(string s) {
+std::string string_input(std::string s) {
   if (s.empty() == false) {
     std::cout << s << ": ";
   };
 
-  string value;
+  std::string value;
   getline(std::cin, value);
   return value;
 }
 
 // Get user input and print some given string
 // return user input value as integer
-int number_input(string s) {
-  string input = string_input(s);
+int number_input(std::string s) {
+  std::string input = string_input(s);
   try {
     int number = std::stoi(input);
     return number;
   } catch (std::invalid_argument& e) {
-    print("Invelid number");
+    print_error("Invalid number\n");
     return number_input(s);
   } catch (std::out_of_range& e) {
-    print("The number you input is out of range.");
+    print_error("The number you input is out of range.\n");
     return number_input(s);
   } catch (...) {
-    print("Something went wrong");
+    print_error("Something went wrong\n");
     return number_input(s);
   }
 }
 
 // Get user input as menu selection
 // This method will call it self when receiviing unexpected input
-int menu_input(string title, string question, std::vector<string> selections) {
+int menu_input(std::string title, std::string question, std::vector<std::string> selections) {
   // Construct dialog from title and selections
   // Each selection will be printed with format <number>. <selection>\n
-  string dialog = "============MENU============\n";
+  std::string dialog = "============MENU============\n";
   dialog.append(title);
   dialog.append("\n");
   for (int i = 0; i < selections.size(); i++) {
@@ -80,4 +92,11 @@ int menu_input(string title, string question, std::vector<string> selections) {
   }
 
   return selected_number;
+}
+
+// returns random double with given min and max bound
+// Only use to generate double value for bill's past due amount
+double random_double(double min, double max) {
+  double f = rand() / (RAND_MAX + 1.0);
+  return min + f * (max - min);
 }
