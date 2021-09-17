@@ -75,9 +75,8 @@ class Program {
     return bill;
   }
 
-  // I know we are iterating customers one by one
-  // But C++ doesn't come with hash map for free
-  // To keep the codebase not simple let's keep this O(n) solution
+  // Getting the customer with given identifier
+  // The function will throw if not found
   Customer customer(string id) {
     if (this->customers_map.find(id) == this->customers_map.end()) {
       throw "Not Found";
